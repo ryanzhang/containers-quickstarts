@@ -52,13 +52,13 @@ objects:
   - persistentVolumeClaim
   - projected
   - secret
-- apiVersion: v1
-  kind: Secret
-  data:
-    gitlab.crt: "${SSL_CERTIFICATE}"
-    gitlab.key: "${SSL_KEY}"
-  metadata:
-    name: gitlab-certs
+# - apiVersion: v1
+#   kind: Secret
+#   data:
+#     gitlab.crt: "${SSL_CERTIFICATE}"
+#     gitlab.key: "${SSL_KEY}"
+#   metadata:
+#     name: gitlab-certs
   type: Opaque
 - kind: ImageStream
   apiVersion: v1
@@ -125,15 +125,15 @@ objects:
         - name: gitlab-ce-volume-2
           persistentVolumeClaim:
             claimName: "${APPLICATION_NAME}-data"
-        - name: gitlab-certificates
-          secret:
-            defaultMode: 420
-            items:
-            - key: "gitlab.crt"
-              path: "gitlab.crt"
-            - key: "gitlab.key"
-              path: "gitlab.key"
-            secretName: gitlab-certs
+        # - name: gitlab-certificates
+        #   secret:
+        #     defaultMode: 420
+        #     items:
+        #     - key: "gitlab.crt"
+        #       path: "gitlab.crt"
+        #     - key: "gitlab.key"
+        #       path: "gitlab.key"
+        #     secretName: gitlab-certs
         containers:
         - name: gitlab-ce
           image:  ${REGISTRY_URL}/gitlab/gitlab-ce:11.9.1-ce.0
@@ -146,8 +146,8 @@ objects:
           - name: GITLAB_OMNIBUS_CONFIG
             value:
               external_url "https://${APPLICATION_HOSTNAME}/";
-              nginx['ssl_certificate']="/etc/gitlab-ssl/gitlab.crt";
-              nginx['ssl_certificate_key']="/etc/gitlab-ssl/gitlab.key";
+              # nginx['ssl_certificate']="/etc/gitlab-ssl/gitlab.crt";
+              # nginx['ssl_certificate_key']="/etc/gitlab-ssl/gitlab.key";
               gitlab_rails['gitlab_https']=true;
               gitlab_rails['gitlab_port']=443;
               root_pass='${GITLAB_ROOT_PASSWORD}';
@@ -168,8 +168,8 @@ objects:
               gitlab_rails['uploads_directory'] = '/gitlab-data/uploads';
               gitlab_ci['builds_directory'] = '/gitlab-data/builds';
               prometheus_monitoring['enable'] = false;
-              gitlab_rails['ldap_enabled'] = true;
-              gitlab_rails['ldap_servers'] = { 'main' => { 'label' => '${LDAP_LABEL}', 'host' => '${LDAP_HOST}', 'port' => '${LDAP_PORT}', 'uid' => 'uid', 'bind_dn' => '${LDAP_BIND_DN}', 'password' => '${LDAP_PASSWORD}', 'encryption' => '${LDAP_ENCRYPTION}', 'verify_certificates' => ${LDAP_VERIFY_CERTIFICATE}, 'allow_username_or_email_login' => true, 'block_auto_created_users' => false, 'active_directory' => false, 'base' => '${LDAP_BASE}', 'user_filter' => '${LDAP_USER_FILTER}', 'attributes' => { 'username' => ['uid'], 'email' => ['mail'], 'name' => 'displayName' } } };
+              # gitlab_rails['ldap_enabled'] = true;
+              # gitlab_rails['ldap_servers'] = { 'main' => { 'label' => '${LDAP_LABEL}', 'host' => '${LDAP_HOST}', 'port' => '${LDAP_PORT}', 'uid' => 'uid', 'bind_dn' => '${LDAP_BIND_DN}', 'password' => '${LDAP_PASSWORD}', 'encryption' => '${LDAP_ENCRYPTION}', 'verify_certificates' => ${LDAP_VERIFY_CERTIFICATE}, 'allow_username_or_email_login' => true, 'block_auto_created_users' => false, 'active_directory' => false, 'base' => '${LDAP_BASE}', 'user_filter' => '${LDAP_USER_FILTER}', 'attributes' => { 'username' => ['uid'], 'email' => ['mail'], 'name' => 'displayName' } } };
               gitlab_rails['rack_attack_git_basic_auth'] = { 'enabled' => false, };
           resources:
             limits:
@@ -183,8 +183,8 @@ objects:
             mountPath: "/etc/gitlab"
           - name: gitlab-ce-volume-2
             mountPath: "/gitlab-data"
-          - name: gitlab-certificates
-            mountPath: /etc/gitlab-ssl
+          # - name: gitlab-certificates
+          #   mountPath: /etc/gitlab-ssl
           readOnly: true
           livenessProbe:
             httpGet:
