@@ -68,7 +68,7 @@ objects:
         secret: "${WEBHOOK_SECRET}"
         allowEnv: true
     - type: ConfigChange
-    - type: ImageChange
+    # - type: ImageChange
 parameters:
 - name: NAME
   displayName: Name
