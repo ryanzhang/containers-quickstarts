@@ -68,14 +68,6 @@ objects:
       type: Recreate
     triggers:
     - type: ConfigChange
-    - type: ImageChange
-      imageChangeParams:
-        automatic: false
-        containerNames:
-        - gitlab-ce
-        from:
-          kind: ImageStreamTag
-          name: "${APPLICATION_NAME}:gitlab-11.9.1"
     replicas: 1
     test: false
     selector:
@@ -179,14 +171,6 @@ objects:
       resources: {}
     triggers:
     - type: ConfigChange
-    - type: ImageChange
-      imageChangeParams:
-        automatic: false
-        containerNames:
-        - gitlab-ce-redis
-        from:
-          kind: ImageStreamTag
-          name: "${APPLICATION_NAME}-redis:5.0.4"
     replicas: 1
     test: false
     selector:
@@ -259,15 +243,6 @@ objects:
       resources: {}
     triggers:
     - type: ConfigChange
-    - type: ImageChange
-      imageChangeParams:
-        automatic: false
-        containerNames:
-        - gitlab-ce-postgresql
-        from:
-          kind: ImageStreamTag
-          name: postgresql:9.6
-          namespace: openshift
     replicas: 1
     test: false
     selector:
