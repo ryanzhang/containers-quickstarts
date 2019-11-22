@@ -260,7 +260,7 @@ objects:
             claimName: "${APPLICATION_NAME}-postgresql"
         containers:
         - name: gitlab-ce-postgresql
-          image: ${REGISTRY_URL}/rhscl/postgresql-96-rhel7:latest
+          image: ${POSTGRESQL_REGISTRY_URL}/rhscl/postgresql-96-rhel7:latest
           ports:
           - containerPort: 5432
             protocol: TCP
@@ -486,4 +486,9 @@ parameters:
 - description: Registry server for pulling image
   displayName: Registry Server for pulling image
   name: REGISTRY_URL
+  value: docker.io
+- description: Registry server for pulling image
+  displayName: Registry Server for pulling image
+  name: POSTGRESQL_REGISTRY_URL
   value: registry.access.redhat.com
+  
