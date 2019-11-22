@@ -21,6 +21,7 @@ objects:
     resources:
       requests:
         storage: ${SONARQUBE_PERSISTENT_VOLUME_SIZE}
+    storageClassName: sonarqube-data
   status: {}
 - apiVersion: v1
   kind: DeploymentConfig
@@ -174,6 +175,7 @@ objects:
       app: sonarqube
     name: sonarqube
   spec:
+    host: ${APPLICATION_HOSTNAME}
     port:
       targetPort: 9000-tcp
     tls:
@@ -205,6 +207,11 @@ parameters:
     name: POSTGRES_DATABASE_NAME
     value: sonar
     required: true
+  - description: Hostname for service routes. Set this in order to have the GitLab display
+      the correct clone urls.
+    displayName: Gitlab instance hostname
+    name: APPLICATION_HOSTNAME
+    required: true        
   - name: SONARQUBE_PERSISTENT_VOLUME_SIZE
     description: The persistent storage volume for SonarQube to use for plugins/config/logs/etc...
     displayName: SonarQube Storage Space Size
