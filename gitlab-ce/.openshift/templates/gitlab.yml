@@ -130,7 +130,7 @@ objects:
           resources:
             limits:
               cpu: '2'
-              memory: 6Gi
+              memory: 3Gi
             requests:
               cpu: 500m
               memory: 1Gi
@@ -145,7 +145,7 @@ objects:
               path: "/help"
               port: 443
               scheme: HTTPS
-            initialDelaySeconds: 120
+            initialDelaySeconds: 360
             timeoutSeconds: 1
             periodSeconds: 10
             successThreshold: 1
