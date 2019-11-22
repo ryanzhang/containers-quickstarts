@@ -52,38 +52,7 @@ objects:
   - persistentVolumeClaim
   - projected
   - secret
-# - apiVersion: v1
-#   kind: Secret
-#   data:
-#     gitlab.crt: "${SSL_CERTIFICATE}"
-#     gitlab.key: "${SSL_KEY}"
-#   metadata:
-#     name: gitlab-certs
   type: Opaque
-- kind: ImageStream
-  apiVersion: v1
-  metadata:
-    name: "${APPLICATION_NAME}"
-    labels:
-      app: "${APPLICATION_NAME}"
-  spec:
-    tags:
-    - name: gitlab-11.9.1
-      from:
-        kind: DockerImage
-        name: gitlab/gitlab-ce:11.9.1-ce.0
-- kind: ImageStream
-  apiVersion: v1
-  metadata:
-    name: "${APPLICATION_NAME}-redis"
-    labels:
-      app: "${APPLICATION_NAME}"
-  spec:
-    tags:
-    - name: 5.0.4
-      from:
-        kind: DockerImage
-        name: redis:5.0.4-alpine
 - kind: ServiceAccount
   apiVersion: v1
   metadata:
@@ -125,15 +94,6 @@ objects:
         - name: gitlab-ce-volume-2
           persistentVolumeClaim:
             claimName: "${APPLICATION_NAME}-data"
-        # - name: gitlab-certificates
-        #   secret:
-        #     defaultMode: 420
-        #     items:
-        #     - key: "gitlab.crt"
-        #       path: "gitlab.crt"
-        #     - key: "gitlab.key"
-        #       path: "gitlab.key"
-        #     secretName: gitlab-certs
         containers:
         - name: gitlab-ce
           image:  ${REGISTRY_URL}/gitlab/gitlab-ce:11.9.1-ce.0
@@ -146,8 +106,6 @@ objects:
           - name: GITLAB_OMNIBUS_CONFIG
             value:
               external_url "https://${APPLICATION_HOSTNAME}/";
-              # nginx['ssl_certificate']="/etc/gitlab-ssl/gitlab.crt";
-              # nginx['ssl_certificate_key']="/etc/gitlab-ssl/gitlab.key";
               gitlab_rails['gitlab_https']=true;
               gitlab_rails['gitlab_port']=443;
               root_pass='${GITLAB_ROOT_PASSWORD}';
@@ -168,8 +126,6 @@ objects:
               gitlab_rails['uploads_directory'] = '/gitlab-data/uploads';
               gitlab_ci['builds_directory'] = '/gitlab-data/builds';
               prometheus_monitoring['enable'] = false;
-              # gitlab_rails['ldap_enabled'] = true;
-              # gitlab_rails['ldap_servers'] = { 'main' => { 'label' => '${LDAP_LABEL}', 'host' => '${LDAP_HOST}', 'port' => '${LDAP_PORT}', 'uid' => 'uid', 'bind_dn' => '${LDAP_BIND_DN}', 'password' => '${LDAP_PASSWORD}', 'encryption' => '${LDAP_ENCRYPTION}', 'verify_certificates' => ${LDAP_VERIFY_CERTIFICATE}, 'allow_username_or_email_login' => true, 'block_auto_created_users' => false, 'active_directory' => false, 'base' => '${LDAP_BASE}', 'user_filter' => '${LDAP_USER_FILTER}', 'attributes' => { 'username' => ['uid'], 'email' => ['mail'], 'name' => 'displayName' } } };
               gitlab_rails['rack_attack_git_basic_auth'] = { 'enabled' => false, };
           resources:
             limits:
@@ -183,8 +139,6 @@ objects:
             mountPath: "/etc/gitlab"
           - name: gitlab-ce-volume-2
             mountPath: "/gitlab-data"
-          # - name: gitlab-certificates
-          #   mountPath: /etc/gitlab-ssl
           readOnly: true
           livenessProbe:
             httpGet:
@@ -483,46 +437,10 @@ objects:
     port:
       targetPort: 443-https
     tls:
-      termination: passthrough
+      termination: edge
       insecureEdgeTerminationPolicy: Redirect
     wildcardPolicy: None
 parameters:
-- description: A label that will be seen by the user at login
-  displayName: LDAP label.
-  name: LDAP_LABEL
-  value: IdM LDAP Provider
-- description: The host URL
-  displayName: LDAP HOST
-  name: LDAP_HOST
-  required: true
-- description: The LDAP port
-  displayName: LDAP port
-  name: LDAP_PORT
-  value: '636'
-- description: The LDAP bind dn
-  displayName: LDAP BIND_DN
-  name: LDAP_BIND_DN
-  required: true
-- description: The LDAP password
-  displayName: LDAP password
-  name: LDAP_PASSWORD
-  required: true
-- description: Verify LDAP certificate
-  displayName: Verify LDAP cert
-  name: LDAP_VERIFY_CERTIFICATE
-  value: 'false'
-- description: The type of encryption (ex. simple_tls)
-  displayName: LDAP encryption type
-  name: LDAP_ENCRYPTION
-  value: simple_tls
-- description: LDAP Base
-  displayName: LDAP Base
-  name: LDAP_BASE
-  required: false
-- description: LDAP User filter
-  displayName: LDAP user filter
-  name: LDAP_USER_FILTER
-  value: ''
 - description: The name for the application. The service will be named like the application.
   displayName: Application name.
   name: APPLICATION_NAME
@@ -585,14 +503,6 @@ parameters:
   displayName: Namespace name where Gitlab CE will be deployed
   description: Namespace name where Gitlab CE will be deployed
   value: gitlab
-  required: true
-- name: SSL_CERTIFICATE
-  displayName: SSL Fullchain Certificate in base64 format
-  description: SSL Fullchain Certificate in base64 format
-  required: true
-- name: SSL_KEY
-  displayName: SSL Private Key Certificate in base64 format
-  description: SSL Private Key Certificate in base64 format
   required: true
 - description: Registry server for pulling image
   displayName: Registry Server for pulling image
