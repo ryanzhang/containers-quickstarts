@@ -92,14 +92,12 @@ objects:
           ports:
           - containerPort: 22
             protocol: TCP
-          - containerPort: 443
+          - containerPort: 80
             protocol: TCP
           env:
           - name: GITLAB_OMNIBUS_CONFIG
             value:
               external_url "http://${APPLICATION_HOSTNAME}/";
-              gitlab_rails['gitlab_https']=true;
-              gitlab_rails['gitlab_port']=443;
               root_pass='${GITLAB_ROOT_PASSWORD}';
               gitlab_rails['initial_root_password']=root_pass;
               postgresql['enable']=false;
@@ -135,8 +133,8 @@ objects:
           livenessProbe:
             httpGet:
               path: "/help"
-              port: 443
-              scheme: HTTPS
+              port: 80
+              scheme: HTTP
             initialDelaySeconds: 360
             timeoutSeconds: 1
             periodSeconds: 10
@@ -145,8 +143,8 @@ objects:
           readinessProbe:
             httpGet:
               path: "/help"
-              port: 443
-              scheme: HTTPS
+              port: 80
+              scheme: HTTP
             initialDelaySeconds: 20
             timeoutSeconds: 1
             periodSeconds: 10
@@ -315,10 +313,10 @@ objects:
       protocol: TCP
       port: 22
       targetPort: 22
-    - name: 443-https
+    - name: 80-http
       protocol: TCP
-      port: 443
-      targetPort: 443
+      port: 80
+      targetPort: 80
     selector:
       app: "${APPLICATION_NAME}"
       deploymentconfig: "${APPLICATION_NAME}"
@@ -414,7 +412,7 @@ objects:
       kind: Service
       name: "${APPLICATION_NAME}"
     port:
-      targetPort: 443-https
+      targetPort: 80-http
     tls:
       termination: edge
       insecureEdgeTerminationPolicy: Redirect
