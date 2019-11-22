@@ -393,6 +393,7 @@ objects:
     resources:
       requests:
         storage: "${REDIS_VOL_SIZE}"
+    storageClassName: ${APPLICATION_NAME}-redis-data
 - kind: PersistentVolumeClaim
   apiVersion: v1
   metadata:
@@ -403,6 +404,7 @@ objects:
     resources:
       requests:
         storage: "${ETC_VOL_SIZE}"
+    storageClassName: ${APPLICATION_NAME}-etc
 - kind: PersistentVolumeClaim
   apiVersion: v1
   metadata:
@@ -413,6 +415,7 @@ objects:
     resources:
       requests:
         storage: "${GITLAB_DATA_VOL_SIZE}"
+    storageClassName: ${APPLICATION_NAME}-data
 - kind: PersistentVolumeClaim
   apiVersion: v1
   metadata:
@@ -423,6 +426,7 @@ objects:
     resources:
       requests:
         storage: "${POSTGRESQL_VOL_SIZE}"
+    storageClassName: ${APPLICATION_NAME}-postgresql
 - kind: Route
   apiVersion: v1
   metadata:
@@ -490,7 +494,7 @@ parameters:
 - description: Volume size for GitLab data
   displayName: GitLab data volume size
   name: GITLAB_DATA_VOL_SIZE
-  value: 10Gi
+  value: 5Gi
 - description: Volume size for postgresql data
   displayName: postgresql volume size
   name: POSTGRESQL_VOL_SIZE
