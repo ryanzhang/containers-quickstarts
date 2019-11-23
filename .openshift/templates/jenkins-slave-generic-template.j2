@@ -45,10 +45,12 @@ objects:
           - name: ca_cert
             value: "${CA_CERT}"
         dockerfilePath: {{ params.DOCKERFILE_PATH | d('Dockerfile') }}
+{% if params.BUILDER_IMAGE_NAME is defined %}        
         from:
           kind: DockerImage
-          name: {{ params.BUILDER_IMAGE_NAME | d('quay.io/openshift/origin-jenkins-agent-base:4.1') }}
+          name: {{ params.BUILDER_IMAGE_NAME }}
           imagePullPolicy: Always
+{% endif %}
       type: Docker
     triggers:
     - type: ConfigChange
