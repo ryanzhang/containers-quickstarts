@@ -41,6 +41,9 @@ objects:
       type: Git
     strategy:
       dockerStrategy:
+        buildArgs:
+          - name: ca_cert
+            value: "${CA_CERT}"
         dockerfilePath: {{ params.DOCKERFILE_PATH | d('Dockerfile') }}
         from:
           kind: DockerImage
@@ -51,5 +54,9 @@ objects:
     - type: ConfigChange
     - type: ImageChange
 {% endfor %}
+parameters:
+  - name: CA_CERT
+    displayName: SSL Fullchain Certificate in base64 format
+    description: SSL Fullchain Certificate in base64 format
+    value: ""
 {% endif %}
-...
