@@ -1,5 +1,6 @@
 #invoke npm in jenkinsfile: sh "scl enable rh-nodejs6 'npm run build'"
 FROM openshift/jenkins-slave-base-centos7:v3.11
+ARG ca_cert
 
 ENV NODEJS_VERSION=10 \
     NPM_CONFIG_PREFIX=$HOME/.npm-global \
@@ -23,5 +24,8 @@ RUN INSTALL_PKGS="nodejs redhat-lsb libXScrnSaver xdg-utils liberation-fonts" &&
     chown root:root /home/jenkins -R && \
     chmod 775 /home/jenkins/.config -R && \
     chmod 775 /home/jenkins/.npm -R
+# Add ca cert into system if set ca_cert in build_args
+RUN echo ${ca_cert} > /etc/pki/ca-trust/source/anchors/ca-chain.cert.perm
+RUN chmod 644 /etc/pki/ca-trust/source/anchors/ca-chain.cert.perm && update-ca-trust
 
 USER 1001
