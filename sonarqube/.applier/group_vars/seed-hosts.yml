@@ -1,9 +1,9 @@
-namespace: sonarqube
+namespace: classic-cicd
 app_name: sonarqube
 jenkins_url: http://jenkins:80
 upstream_sq_version: 7.9.6-community
 sonar_search_java_additional_opts: '-Dnode.store.allow_mmapfs=false'
-build_repo: https://github.com/redhat-cop/containers-quickstarts.git
+build_repo: https://github.com.cnpmjs.org/redhat-cop/containers-quickstarts.git
 build_ref: master
 
 build:
@@ -28,14 +28,14 @@ deploy:
 openshift_cluster_content:
 - object: Environment Setup
   content:
-  - name: Create Projects
-    template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/v1.4.12/project-requests/create-project.yml"
-    action: create
-    params_from_vars:
-      NAMESPACE: "{{ namespace }}"
-      NAMESPACE_DISPLAY_NAME: "{{ namespace }}"
-    tags:
-      - project
+  # - name: Create Projects
+  #   template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/v1.4.12/project-requests/create-project.yml"
+  #   action: create
+  #   params_from_vars:
+  #     NAMESPACE: "{{ namespace }}"
+  #     NAMESPACE_DISPLAY_NAME: "{{ namespace }}"
+  #   tags:
+  #     - project
 - object: Builds
   content:
   - name: sonarqube
